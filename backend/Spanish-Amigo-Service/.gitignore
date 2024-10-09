@@ -1,0 +1,44 @@
+# Build Folders
+bin/
+obj/
+out/
+
+# Visual Studio files
+.vs/
+*.sln.docstates
+
+# User-specific files
+*.user
+*.suo
+*.userprefs
+*.ide
+
+# NuGet packages
+*.nupkg
+**/packages/*
+!**/packages/build/*
+!**/packages/build/**/build/
+
+# Visual Studio Code files
+.vscode/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Other files
+*.db
+*.pdb
+*.mdb
+*.ilk
+*.cache
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Publish folder
+publish/

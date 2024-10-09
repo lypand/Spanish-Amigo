@@ -1,0 +1,18 @@
+.vocab {
+  display: grid;
+  place-items: center;
+  height: 45vh;
+  grid-template-columns: auto;
+}
+
+h1,
+p {
+  text-align: center;
+}
+
+.conjugation-table-wrapper {
+  display: grid;
+  place-items: center;
+  height: 25vh;
+  grid-template-columns: auto;
+}

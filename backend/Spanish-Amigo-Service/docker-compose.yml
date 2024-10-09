@@ -1,0 +1,23 @@
+services:
+  app:
+    container_name: backend
+    image: mydotnetapp:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://database:27017
+  mongodb:
+    restart: always
+    container_name: database
+    image: mongodb/mongodb-community-server:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+volumes:
+  mongo_data:
+    external: true
