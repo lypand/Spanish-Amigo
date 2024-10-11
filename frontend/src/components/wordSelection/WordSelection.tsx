@@ -1,4 +1,12 @@
-const WordSelection = ({ onNext, onToggle, onPrevious }) => {
+import React from 'react'
+
+type WordSelectionProps = {
+    onNext: () => void,
+    onToggle: () => void,
+    onPrevious: () => void,
+}
+
+const WordSelection = ({ onNext, onToggle, onPrevious }: WordSelectionProps) => {
     return (
         <div className="buttons">
             <button onClick={onNext}>Next Word</button>

@@ -1,9 +1,15 @@
 import React, { useEffect } from 'react';
 
-const GlobalEventListener = ({ onNext, onToggle, onPrevious }) => {
+type GlobalEventListenerProps = {
+    onNext: () => void;
+    onToggle: () => void;
+    onPrevious: () => void;
+}
+
+const GlobalEventListener = ({ onNext, onToggle, onPrevious }: GlobalEventListenerProps) => {
 
     useEffect(() => {
-        const handleKeyDown = (event) => {
+        const handleKeyDown = (event: KeyboardEvent) => {
             console.log(event);
             if (event.code === 'ArrowRight') {
                 onNext();

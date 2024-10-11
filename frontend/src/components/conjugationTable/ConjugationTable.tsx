@@ -4,35 +4,46 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
-} from '@tanstack/react-table'
+  ColumnDef,
+} from '@tanstack/react-table';
 import * as SpanishVerbs from 'spanish-verbs';
 
-const columnHelper = createColumnHelper()
+// Define the type for the conjugation data
+interface Conjugation {
+  person: string;
+  present: string;
+  preterite: string;
+  imperfect: string;
+  future: string;
+}
 
-const columns = [
+const columnHelper = createColumnHelper<Conjugation>();
+
+const columns: any = [
   columnHelper.accessor('person', {
-    header: () => '',
-    cell: info => info.renderValue(),
+    header: 'Person',
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('present', {
-    header: () => 'Present',
-    cell: info => info.renderValue(),
+    header: 'Present',
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('preterite', {
-    header: () => 'Preterite',
-    cell: info => info.renderValue(),
+    header: 'Preterite',
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('imperfect', {
-    header: () => 'Imperfect',
-    cell: info => info.renderValue(),
+    header: 'Imperfect',
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('future', {
-    header: () => 'Future',
-    cell: info => info.renderValue(),
+    header: 'Future',
+    cell: info => info.getValue(),
   }),
-]
+];
 
-const getConjugations = (word) => [
+// Define the function to get conjugations with typing
+const getConjugations = (word: string): Conjugation[] => [
   {
     person: 'Yo',
     present: SpanishVerbs.getConjugation(word, 'INDICATIVE_PRESENT', 0),
@@ -63,25 +74,30 @@ const getConjugations = (word) => [
   },
   {
     person: 'Ellos/Ellas/Uds',
-    present: SpanishVerbs.getConjugation(word, 'INDICATIVE_PRESENT', 5),
-    preterite: SpanishVerbs.getConjugation(word, 'INDICATIVE_PRETERITE', 5),
-    imperfect: SpanishVerbs.getConjugation(word, 'INDICATIVE_IMPERFECT', 5),
-    future: SpanishVerbs.getConjugation(word, 'INDICATIVE_FUTURE', 5),
+    present: SpanishVerbs.getConjugation(word, 'INDICATIVE_PRESENT', 4),
+    preterite: SpanishVerbs.getConjugation(word, 'INDICATIVE_PRETERITE', 4),
+    imperfect: SpanishVerbs.getConjugation(word, 'INDICATIVE_IMPERFECT', 4),
+    future: SpanishVerbs.getConjugation(word, 'INDICATIVE_FUTURE', 4),
   }
 ];
 
-function ConjugationTable({ word }) {
-  const [data, setData] = useState(() => getConjugations(word));
+// Define the props interface
+interface ConjugationTableProps {
+  word: string;
+}
+
+const ConjugationTable: React.FC<ConjugationTableProps> = ({ word }) => {
+  const [data, setData] = useState<Conjugation[]>(() => getConjugations(word));
 
   useEffect(() => {
     setData(getConjugations(word));
   }, [word]);
 
-  const table = useReactTable({
+  const table = useReactTable<Conjugation>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-  })
+  });
 
   const displayConjugations = data.length > 2 && data[1].present !== data[2].present;
 
@@ -119,7 +135,7 @@ function ConjugationTable({ word }) {
         </table>
       )}
     </div>
-  )
+  );
 }
-export default ConjugationTable;
 
+export default ConjugationTable;

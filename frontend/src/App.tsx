@@ -1,20 +1,26 @@
 import './App.css';
 import React, { useEffect, useState, useReducer } from 'react';
-import AddVocabEntries from './components/addVocabEntry/AddVocabEntries.jsx';
-import VocabCard from './components/cards/VocabCard.jsx'
-import WordSelection from './components/wordSelection/WordSelection.jsx'
-import GlobalEventListener from './components/eventListeners/GlobalEventListener.jsx';
-import Header from './components/header/Header.jsx'
-import WordRepository from './components/externalRepository/WordRepository.jsx';
-import WordsReducer from './state/reducers/wordsReducer.jsx';
+import AddVocabEntries from './components/addVocabEntry/AddVocabEntries.tsx';
+import VocabCard from './components/cards/VocabCard.tsx'
+import WordSelection from './components/wordSelection/WordSelection.tsx'
+import GlobalEventListener from './components/eventListeners/GlobalEventListener.tsx';
+import Header from './components/header/Header.tsx'
+import WordRepository from './components/externalRepository/WordRepository.tsx';
+import WordsReducer, { State } from './state/reducers/wordsReducer.tsx';
+import { VocabEntry } from "./@types/vocabEntityType";
 
 function App() {
   const [displayEnglish, setDisplayEnglish] = useState(false);
   const [allSentences, setAllSentences] = useState(false);
-  const [words, dispatchWords] = useReducer(
-    WordsReducer,
-    { data: [], isLoading: true, selectedWord: '', currentIndex: 0 }
-  );
+
+  const wordInitState: State = {
+    data: [],
+    isLoading: true,
+    selectedWord: null,
+    currentIndex: 0,
+  };
+
+  const [words, dispatchWords] = useReducer(WordsReducer, wordInitState);
 
   const handleNext = () => {
     dispatchWords({
@@ -30,13 +36,13 @@ function App() {
 
   const handleSpeakWord = () => {
     if (words.data.length !== 0) {
-      const utterance = new SpeechSynthesisUtterance(words.selectedWord.spanish);
+      const utterance = new SpeechSynthesisUtterance(words.selectedWord?.spanishWord);
       utterance.lang = 'es';
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  const handleSetWords = (data) => {
+  const handleSetWords = (data: VocabEntry[]) => {
     dispatchWords({
       type: 'WORDS_FETCH_SUCCESS',
       payload: data,
@@ -53,7 +59,7 @@ function App() {
 
   useEffect(() => {
     if (words.data.length !== 0) {
-      handleSpeakWord(words.selectedWord.spanish);
+      handleSpeakWord();
     }
   }, [words.selectedWord]);
 
@@ -63,7 +69,7 @@ function App() {
       <Header ontoggleAllSentences={handleToggleAllSentences} onHideEnglish={handleToggle} ></Header>
       <div className="app">
         {words.isLoading ? <p>Loading...</p> :
-          <VocabCard wordInfo={words.selectedWord} wordsLoading={words.isLoading} displayEnglish={displayEnglish} allSentences={allSentences}></VocabCard>
+          <VocabCard wordInfo={words.selectedWord} displayEnglish={displayEnglish}></VocabCard>
         }
         <WordSelection onNext={handleNext} onToggle={handleToggle} onPrevious={handlePrevious}></WordSelection>
         <AddVocabEntries></AddVocabEntries>

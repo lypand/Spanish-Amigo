@@ -1,6 +1,12 @@
 import styles from './header.module.scss';
+import React from 'react';
 
-function Header({ ontoggleAllSentences, onHideEnglish }) {
+type HeaderProps = {
+    ontoggleAllSentences: () => void;
+    onHideEnglish: () => void;
+}
+
+const Header = ({ ontoggleAllSentences, onHideEnglish }: HeaderProps) => {
     return (
         <header className={styles.main_header}>
             <div className={styles.main_header_icon}>
@@ -16,9 +22,9 @@ function Header({ ontoggleAllSentences, onHideEnglish }) {
                         <a href='#' onClick={onHideEnglish}>Display English</a>
                     </li>
                 </ul>
-            </nav >
-        </header >
-    )
-}
+            </nav>
+        </header>
+    );
+};
 
-export default Header
+export default Header;
