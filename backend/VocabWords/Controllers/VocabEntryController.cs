@@ -1,23 +1,32 @@
 using ConsoleApp1;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Spanish_Amigo_Service.Auth.Actions;
+using Spanish_Amigo_Service.Dtos;
 
 namespace Spanish_Amigo_Service.Controllers;
 
 [ApiController]
+[Authorize(Roles = "User")]
 [Route("[controller]")]
 public class VocabController : ControllerBase
 {
     private readonly IVocabWordsAction _vocabWordsAction;
+    private readonly IUserContextAction _userContextAction;
 
-    public VocabController(IVocabWordsAction vocabWordsAction)
+    public VocabController(
+        IVocabWordsAction vocabWordsAction,
+        IUserContextAction userContextAction)
     {
         _vocabWordsAction = vocabWordsAction;
+        _userContextAction = userContextAction;
     }
 
     [HttpGet("/VocabEntries")]
     public async Task<IActionResult> Get()
     {
-        var vocabWords = await _vocabWordsAction.GetVocabWords();
+        var applicationUser = _userContextAction.GetCurrentUserContext();
+        var vocabWords = await _vocabWordsAction.GetVocabWords(applicationUser.Id);
         return Ok(vocabWords);
     }
 
@@ -32,9 +41,10 @@ public class VocabController : ControllerBase
 
     [HttpPost("/VocabEntries")]
     public async Task<IActionResult> Post(
-        [FromBody] List<VocabEntry> vocabEntries)
+        [FromBody] List<VocabEntryInput> vocabEntries)
     {
-        var vocabWords = await _vocabWordsAction.InsertVocabEntry(vocabEntries);
+        var applicationUser = _userContextAction.GetCurrentUserContext();
+        var vocabWords = await _vocabWordsAction.InsertVocabEntry(vocabEntries, applicationUser.Id);
         return Ok(vocabWords);
     }
 }

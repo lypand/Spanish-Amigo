@@ -40,7 +40,7 @@ function VocabCard({ wordInfo, displayEnglish }: VocabCardProps) {
               </div>
             </div>
             <div className="conjugation-table-wrapper">
-              <ConjugationTable word={wordInfo?.spanishWord || ""}></ConjugationTable>
+              {/* <ConjugationTable word={wordInfo?.spanishWord || ""}></ConjugationTable> */}
             </div>
           </div>
         </div>

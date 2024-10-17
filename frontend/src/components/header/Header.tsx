@@ -2,11 +2,10 @@ import styles from './header.module.scss';
 import React from 'react';
 
 type HeaderProps = {
-    ontoggleAllSentences: () => void;
     onHideEnglish: () => void;
 }
 
-const Header = ({ ontoggleAllSentences, onHideEnglish }: HeaderProps) => {
+const Header = ({ onHideEnglish }: HeaderProps) => {
     return (
         <header className={styles.main_header}>
             <div className={styles.main_header_icon}>
@@ -15,9 +14,6 @@ const Header = ({ ontoggleAllSentences, onHideEnglish }: HeaderProps) => {
             <nav className={styles.main_nav}>
                 <div className={styles.main_nav_items_setting}>Settings</div>
                 <ul className={styles.main_nav_items}>
-                    <li className={styles.main_nav_item}>
-                        <a href='#' onClick={ontoggleAllSentences}>Display All Sentences</a>
-                    </li>
                     <li className={styles.main_nav_item}>
                         <a href='#' onClick={onHideEnglish}>Display English</a>
                     </li>

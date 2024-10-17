@@ -1,24 +1,31 @@
 
 using ConsoleApp1;
-using Humanizer.Localisation;
-using MongoDB.Driver;
+using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
-using Spanish_Amigo_Service.VocabWords.Connections;
+using Spanish_Amigo_Service.Dtos;
+using Spanish_Amigo_Service.Repositories;
 
 namespace Spanish_Amigo_Service.Actions;
 
-public class VocabActionMongo : IVocabWordsAction
+public class VocabAction : IVocabWordsAction
 {
+    private readonly IRepository _repository;
     private static readonly HttpClient _httpClient = new HttpClient();
-    private readonly MongoDbContext _context;
-    public VocabActionMongo(MongoDbContext context)
+
+    public VocabAction(
+        IRepository repository)
     {
-        _context = context;
+        if (repository is null)
+        {
+            throw new ArgumentException($"Property of {nameof(IRepository)} was not provided");
+        }
+
+        _repository = repository;
     }
 
-    public async Task<List<VocabEntry>> GetVocabWords()
+    public async Task<List<VocabEntry>> GetVocabWords(ObjectId userId)
     {
-        List<VocabEntry> results = await _context.VocabEntries.Find(_ => true).ToListAsync();
+        List<VocabEntry> results = await _repository.GetVocabWords(userId);
         return results;
     }
 
@@ -30,10 +37,15 @@ public class VocabActionMongo : IVocabWordsAction
         JArray resultArray = JArray.Parse(json);
         return GenerateDraft(resultArray, spanishWord);
     }
-    public async Task<List<VocabEntry>> InsertVocabEntry(List<VocabEntry> vocabEntries)
+    public async Task<List<VocabEntry>> InsertVocabEntry(List<VocabEntryInput> vocabEntries, ObjectId userId)
     {
-        await _context.VocabEntries.InsertManyAsync(vocabEntries);
-        return await GetVocabWords();
+        return await _repository.InsertVocabEntry(vocabEntries.Select(v => new VocabEntry()
+        {
+            Conjugations = v.Conjugations,
+            EnglishTranslations = v.EnglishTranslations,
+            Sentences = v.Sentences,
+            SpanishWord = v.SpanishWord,
+        }).ToList(), userId);
     }
 
     private VocabEntry GenerateDraft(JArray jArray, string spanishWord)
