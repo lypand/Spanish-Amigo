@@ -31,11 +31,11 @@ jobs:
 
       - name: Run backend tests
         working-directory: ./backend
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test spanish-amigo.sln  --no-build --verbosity normal
 
       - name: Publish backend
         working-directory: ./backend
-        run: dotnet publish --configuration Release --output ./publish
+        run: dotnet publish spanish-amigo.sln  --configuration Release --output ./publish
 
       - name: Zip backend artifact
         run: zip -r backend.zip ./backend/publish
