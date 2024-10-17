@@ -85,13 +85,13 @@ jobs:
 
     steps:
       - name: Download frontend artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: frontend-app
           path: frontend
 
       - name: Download backend artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: backend-app
           path: backend
