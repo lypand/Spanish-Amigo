@@ -1,0 +1,122 @@
+name: Build and deploy Node.js app to Azure Web App - spanishhelper
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+env: 
+  REACT_APP_BACKEND_BASE_URL: https://spanish-helper-backend-hgcvetd5e8dfgeb2.eastus-01.azurewebsites.net/api
+  
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: Backend - npm install, build, and test
+        working-directory: ./backend
+        run: |
+          npm install
+
+      - name: Zip backend artifact
+        working-directory: ./backend
+        run: zip -r backend.zip .
+
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: backend-app
+          path: ./backend/backend.zip
+          
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: UI - npm install, build, and test
+        working-directory: ./frontend
+        run: |
+          npm install
+          npm run build --if-present
+
+      - name: Zip frontend artifact
+        working-directory: ./frontend/build
+        run: zip -r frontend.zip .
+
+      - name: Upload frontend artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend-app
+          path: ./frontend/build/frontend.zip
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-frontend, build-backend]
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write # This is required for requesting the JWT
+
+    steps:
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend-app
+          path: frontend
+
+      - name: Download backend artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: backend-app
+          path: backend
+
+      - name: Unzip frontend artifact
+        run: unzip frontend/frontend.zip -d frontend
+
+      - name: Clean up zip file
+        run: rm frontend/frontend.zip
+
+      - name: Unzip backend artifact
+        run: unzip backend/backend.zip -d backend
+
+      - name: Clean up zip file
+        run: rm backend/backend.zip
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8127A9EA144A4DF680FFB8D0EEF7DBF5 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5B61154C84DC452AAEEB1CE3E66B7C2C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_06AC170836E4460BAC30CD7D3FD2D987 }}
+
+      - name: Deploy frontend to Azure Web App
+        id: deploy-frontend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'spanishhelper'  # Replace with your Azure Web App name
+          slot-name: 'Production'    # Replace with your Azure Web App slot name, if applicable
+          package: frontend
+
+      - name: Deploy backend to Azure Web App
+        id: deploy-backend
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'spanish-helper-backend'  # Replace with your Azure Web App name
+          slot-name: 'Production'    # Replace with your Azure Web App slot name, if applicable
+          package: backend
