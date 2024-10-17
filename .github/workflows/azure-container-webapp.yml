@@ -27,7 +27,7 @@ jobs:
 
       - name: Build backend
         working-directory: ./backend
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build spanish-amigo.sln --configuration Release --no-restore
 
       - name: Run backend tests
         working-directory: ./backend
@@ -119,14 +119,14 @@ jobs:
         id: deploy-frontend
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'spanishhelper'  # Replace with your Azure Web App name
-          slot-name: 'Production'    # Replace with your Azure Web App slot name, if applicable
+          app-name: 'spanishhelper' 
+          slot-name: 'Production'  
           package: frontend
 
       - name: Deploy backend to Azure Web App
         id: deploy-backend
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'spanish-helper-backend'  # Replace with your Azure Web App name
-          slot-name: 'Production'    # Replace with your Azure Web App slot name, if applicable
+          app-name: 'spanish-helper-backend' 
+          slot-name: 'Production'   
           package: backend
