@@ -16,25 +16,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
         with:
-          node-version: '20.x'
+          dotnet-version: '8.0.x' 
 
-      - name: Backend - npm install, build, and test
+      - name: Restore backend dependencies
         working-directory: ./backend
-        run: |
-          npm install
+        run: dotnet restore
+
+      - name: Build backend
+        working-directory: ./backend
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run backend tests
+        working-directory: ./backend
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Publish backend
+        working-directory: ./backend
+        run: dotnet publish --configuration Release --output ./publish
 
       - name: Zip backend artifact
-        working-directory: ./backend
-        run: zip -r backend.zip .
+        run: zip -r backend.zip ./backend/publish
 
       - name: Upload backend artifact
         uses: actions/upload-artifact@v2
         with:
           name: backend-app
-          path: ./backend/backend.zip
+          path: backend.zip
           
   build-frontend:
     runs-on: ubuntu-latest
