@@ -1,0 +1,15 @@
+.add_vocab_entries input {
+    display: block;
+}
+
+.add_vocab_entries {
+    margin-top: 100px
+}
+
+.multi-input input {
+    display: inline;
+}
+
+.multi-input * {
+    margin: 30px;
+}

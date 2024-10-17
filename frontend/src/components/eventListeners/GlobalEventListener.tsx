@@ -10,7 +10,6 @@ const GlobalEventListener = ({ onNext, onToggle, onPrevious }: GlobalEventListen
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
-            console.log(event);
             if (event.code === 'ArrowRight') {
                 onNext();
             }

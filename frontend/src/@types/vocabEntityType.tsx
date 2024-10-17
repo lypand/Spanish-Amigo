@@ -1,9 +1,9 @@
 export type VocabEntry = {
-    id: number,
+    id?: number,
     spanishWord: string,
     englishTranslations: Array<string>,
     sentences: Array<Sentence>,
-    conjugation: Array<Conjugation>,
+    conjugation?: Array<Conjugation>,
 }
 
 export type Sentence = {

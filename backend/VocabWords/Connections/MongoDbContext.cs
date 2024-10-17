@@ -1,5 +1,7 @@
 using ConsoleApp1;
 using MongoDB.Driver;
+using Spanish_Amigo_Service.Auth.Models;
+using Spanish_Amigo_Service.Models;
 
 namespace Spanish_Amigo_Service.VocabWords.Connections;
 
@@ -13,5 +15,5 @@ public class MongoDbContext
         _database = client.GetDatabase(databaseName);
     }
 
-    public IMongoCollection<VocabEntry> VocabEntries => _database.GetCollection<VocabEntry>("vocab_entries");
+    public IMongoCollection<ProfileDataModel> ProfileData => _database.GetCollection<ProfileDataModel>("profile_data");
 }
