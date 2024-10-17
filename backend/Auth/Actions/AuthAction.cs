@@ -2,31 +2,43 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Google.Apis.Auth;
+using Microsoft.IdentityModel.Protocols.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Spanish_Amigo_Service.Auth.Models;
 using Spanish_Amigo_Service.Repositories;
+using SqlKata;
 
 namespace Spanish_Amigo_Service.Auth.Actions;
 
 public class AuthAction : IAuthAction
 {
     private readonly IRepository _repository;
-    public AuthAction(IRepository repository)
+    private readonly IConfiguration _configuration;
+    public AuthAction(
+        IRepository repository,
+        IConfiguration configuration)
     {
         if (repository is null)
         {
             throw new ArgumentNullException($"Dependency {nameof(IRepository)} was null.");
         }
         _repository = repository;
+        _configuration = configuration;
     }
 
     public async Task<string> HandleAuth(string token)
     {
         try
         {
+            var googleClientId = _configuration["GoogleClientId"];
+            if (googleClientId is null)
+            {
+                throw new InvalidConfigurationException($"Could not find variable for GoogleClientId in {nameof(AuthAction)}.");
+            }
+
             var validationSettings = new GoogleJsonWebSignature.ValidationSettings()
             {
-                Audience = new[] { "626523891185-mi6vmd33rdl1hs90sbgpolvrc0b1cdr9.apps.googleusercontent.com" }
+                Audience = new[] { googleClientId }
             };
 
             var payload = await GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
@@ -69,9 +81,15 @@ public class AuthAction : IAuthAction
         {
             claims = claims.Append(new Claim(ClaimTypes.Role, role.ToString())).ToArray();
         }
+        var applicationSecret = _configuration["ApplicationSecret"];
+        
+        if (applicationSecret is null)
+        {
+            throw new InvalidConfigurationException($"Could not find variable for ApplicationSecret in {nameof(AuthAction)}.");
+        }
 
         // Create the signing key
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("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asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfassdfasdfasdfasfasdf")); // Use a strong secret key
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(applicationSecret));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         // Create the token

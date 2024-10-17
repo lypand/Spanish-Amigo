@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Spanish_Amigo_Service</RootNamespace>
+    <UserSecretsId>fec1cb2f-e481-4d1f-8927-18bad52e454e</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

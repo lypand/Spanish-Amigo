@@ -6,8 +6,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
-const CLIENT_ID = "626523891185-mi6vmd33rdl1hs90sbgpolvrc0b1cdr9.apps.googleusercontent.com"
-
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+console.log(import.meta.env);
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={CLIENT_ID}>

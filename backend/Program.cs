@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Spanish_Amigo_Service.Repositories;
 using Spanish_Amigo_Service.Repositories.Mappers;
+using Microsoft.IdentityModel.Protocols.Configuration;
 
 public class Program
 {
@@ -19,6 +20,15 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+        
+        var appSecret =
+            builder.Configuration["ApplicationSecret"];
+
+        if (appSecret is null)
+        {
+            throw new InvalidConfigurationException($"Could not find variable for ApplicationSecret in {nameof(Program)}.");
+        }
+
         builder.Services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -29,7 +39,7 @@ public class Program
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("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asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfassdfasdfasdfasfasdf")),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSecret)),
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 ClockSkew = TimeSpan.Zero
@@ -51,7 +61,7 @@ public class Program
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("https://your-production-domain.com") // Replace with your actual domain
+                    builder => builder.AllowAnyOrigin()
                                       .AllowAnyMethod()
                                       .AllowAnyHeader());
             });
@@ -87,8 +97,20 @@ public class Program
             });
         });
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings");
+        if(mongoDbSettings is null)
+        {
+            throw new InvalidConfigurationException($"MongoDbSettings were not configured in {nameof(Program)}");
+        }
         var connectionString = mongoDbSettings.GetValue<string>("ConnectionString");
+        if (connectionString is null)
+        {
+            throw new InvalidConfigurationException($"ConnectionString was not configured in {nameof(Program)}");
+        }
         var databaseName = mongoDbSettings.GetValue<string>("DatabaseName");
+        if (databaseName is null)
+        {
+            throw new InvalidConfigurationException($"DatabaseName was not configured in {nameof(Program)}");
+        }
         builder.Services.AddSingleton(new MongoDbContext(connectionString, databaseName));
 
         builder.Services.AddSingleton<IVocabWordsAction, VocabAction>();
@@ -116,7 +138,7 @@ public class Program
         {
             app.UseCors("AllowSpecificOrigin");
         }
-        app.UseMiddleware<TokenValidationMiddleware>("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asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfassdfasdfasdfasfasdf");
+        app.UseMiddleware<TokenValidationMiddleware>(appSecret);
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
