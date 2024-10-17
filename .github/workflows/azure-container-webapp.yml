@@ -41,7 +41,7 @@ jobs:
         run: zip -r backend.zip ./backend/publish
 
       - name: Upload backend artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: backend-app
           path: backend.zip
@@ -68,7 +68,7 @@ jobs:
         run: zip -r frontend.zip .
 
       - name: Upload frontend artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: frontend-app
           path: ./frontend/build/frontend.zip
