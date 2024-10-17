@@ -114,7 +114,7 @@ jobs:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_8127A9EA144A4DF680FFB8D0EEF7DBF5 }}
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5B61154C84DC452AAEEB1CE3E66B7C2C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_06AC170836E4460BAC30CD7D3FD2D987 }}
-
+ 
       - name: Deploy frontend to Azure Web App
         id: deploy-frontend
         uses: azure/webapps-deploy@v2
