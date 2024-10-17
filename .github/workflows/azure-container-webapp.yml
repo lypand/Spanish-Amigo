@@ -23,7 +23,7 @@ jobs:
 
       - name: Restore backend dependencies
         working-directory: ./backend
-        run: dotnet restore
+        run: dotnet restore spanish-amigo.sln
 
       - name: Build backend
         working-directory: ./backend
