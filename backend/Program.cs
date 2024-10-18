@@ -16,6 +16,17 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        using var loggerFactory = LoggerFactory.Create(builder =>
+        {
+            builder
+                .AddConsole()
+                .AddDebug();
+        });
+
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogInformation("Application is starting...");
+
+
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -24,10 +35,14 @@ public class Program
         var appSecret =
             builder.Configuration["ApplicationSecret"];
 
+        logger.LogInformation("Application attempting to grab secret");
+
         if (appSecret is null)
         {
             throw new InvalidConfigurationException($"Could not find variable for ApplicationSecret in {nameof(Program)}.");
         }
+
+        logger.LogInformation("Application got secret");
 
         builder.Services.AddAuthentication(options =>
         {
@@ -97,20 +112,26 @@ public class Program
             });
         });
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings");
+        logger.LogInformation("Application attempting to grab mongoDbSettings");
+
         if (mongoDbSettings is null)
         {
             throw new InvalidConfigurationException($"MongoDbSettings were not configured in {nameof(Program)}");
         }
+        logger.LogInformation("Application got mongoDbSettings");
+
         var connectionString = mongoDbSettings.GetValue<string>("ConnectionString");
         if (connectionString is null)
         {
             throw new InvalidConfigurationException($"ConnectionString was not configured in {nameof(Program)}");
         }
+        logger.LogInformation("Application attempting to grab ConnectionString");
         var databaseName = mongoDbSettings.GetValue<string>("DatabaseName");
         if (databaseName is null)
         {
             throw new InvalidConfigurationException($"DatabaseName was not configured in {nameof(Program)}");
         }
+        logger.LogInformation("Application got ConnectionString");
         builder.Services.AddSingleton(new MongoDbContext(connectionString, databaseName));
 
         builder.Services.AddSingleton<IVocabWordsAction, VocabAction>();
