@@ -39,14 +39,13 @@ jobs:
         run: dotnet publish spanish-amigo.sln  --configuration Release --output ./publish
 
       - name: Zip backend artifact
-        working-directory: ./backend/publish
-        run: zip -r backend.zip .
+        run: zip -r backend.zip ./backend/publish
 
       - name: Upload backend artifact
         uses: actions/upload-artifact@v3
         with:
           name: backend-app
-          path: ./backend/publish/backend.zip
+          path: backend.zip
           
   build-frontend:
     runs-on: ubuntu-latest
