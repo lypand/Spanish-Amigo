@@ -7,7 +7,8 @@ on:
   workflow_dispatch:
 
 env: 
-  VITE_BACKEND_BASE_URL: https://spanish-helper-backend-hgcvetd5e8dfgeb2.eastus-01.azurewebsites.net/api
+  VITE_BACKEND_BASE_URL: ${{ secrets.VITE_BACKEND_BASE_URL }}
+  VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
 
 jobs:
   build-backend:
