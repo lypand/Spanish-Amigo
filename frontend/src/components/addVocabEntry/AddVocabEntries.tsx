@@ -4,11 +4,6 @@ import axios from 'axios';
 import { VocabEntry } from '../../@types/vocabEntityType';
 import { AddVocabEntry, GetVocabEntryDraft } from '../externalRepository/WordRepository';
 
-const baseURL = import.meta.env.VITE_BACKEND_BASE_URL;
-const axiosInstance = axios.create({
-  baseURL: baseURL
-});
-
 function AddVocabEntries() {
 
   const [formData, setFormData] = useState(
