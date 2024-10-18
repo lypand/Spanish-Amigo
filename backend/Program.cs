@@ -20,7 +20,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
-        
+
         var appSecret =
             builder.Configuration["ApplicationSecret"];
 
@@ -61,7 +61,7 @@ public class Program
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.AllowAnyOrigin()
+                    builder => builder.WithOrigins("https://spanishhelper.azurewebsites.net")
                                       .AllowAnyMethod()
                                       .AllowAnyHeader());
             });
@@ -97,7 +97,7 @@ public class Program
             });
         });
         var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings");
-        if(mongoDbSettings is null)
+        if (mongoDbSettings is null)
         {
             throw new InvalidConfigurationException($"MongoDbSettings were not configured in {nameof(Program)}");
         }
