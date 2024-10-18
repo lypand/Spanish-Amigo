@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env: 
-  REACT_APP_BACKEND_BASE_URL: https://spanish-helper-backend-hgcvetd5e8dfgeb2.eastus-01.azurewebsites.net/api
-  
+  VITE_BACKEND_BASE_URL: https://spanish-helper-backend-hgcvetd5e8dfgeb2.eastus-01.azurewebsites.net/api
+
 jobs:
   build-backend:
     runs-on: ubuntu-latest
