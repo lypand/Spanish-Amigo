@@ -129,6 +129,6 @@ jobs:
         id: deploy-backend
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'spanish-helper-backend' 
+          app-name: 'Spanish-Amigo-Backend' 
           slot-name: 'Production'   
           package: backend
