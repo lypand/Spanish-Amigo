@@ -130,6 +130,9 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         if (app.Environment.IsDevelopment())
         {
             app.UseCors("AllowAll");
