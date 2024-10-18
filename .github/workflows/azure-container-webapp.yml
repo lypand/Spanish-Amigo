@@ -46,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: backend-app
-          path: backend.zip
+          path: ./backend/publish/backend.zip
           
   build-frontend:
     runs-on: ubuntu-latest
