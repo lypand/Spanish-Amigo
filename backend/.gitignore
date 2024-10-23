@@ -39,6 +39,7 @@ out/
 *.dll
 *.so
 *.dylib
+.env
 
 # Publish folder
 publish/

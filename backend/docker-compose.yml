@@ -1,15 +1,14 @@
 services:
   app:
     container_name: backend
-    image: mydotnetapp:latest
+    image: lypandrew87/spanish-amigo:latest
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - MongoDbSettings__ConnectionString=mongodb://database:27017
+      - "8080:8080"
+    env_file:
+      - .env
   mongodb:
     restart: always
     container_name: database
