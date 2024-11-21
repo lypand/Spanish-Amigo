@@ -76,7 +76,7 @@ public class Program
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("https://spanishhelper.azurewebsites.net")
+                    builder => builder.WithOrigins("https://spanish-amigo-backend.delightfulpebble-6fff9143.westus.azurecontainerapps.io")
                                       .AllowAnyMethod()
                                       .AllowAnyHeader());
             });

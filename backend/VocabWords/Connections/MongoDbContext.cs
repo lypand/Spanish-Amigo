@@ -1,6 +1,4 @@
-using ConsoleApp1;
 using MongoDB.Driver;
-using Spanish_Amigo_Service.Auth.Models;
 using Spanish_Amigo_Service.Models;
 
 namespace Spanish_Amigo_Service.VocabWords.Connections;
