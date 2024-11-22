@@ -1,0 +1,48 @@
+name: Trigger auto deployment for spanish-amigo-frontend
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ develop ]
+    paths:
+    - '**'
+    - '.github/workflows/spanish-amigo-frontend-AutoDeployTrigger-d2b4f5dc-fc0e-480b-b7fc-88e275f13bfb.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.SPANISHAMIGOFRONTEND_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.SPANISHAMIGOFRONTEND_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.SPANISHAMIGOFRONTEND_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}/frontend
+          _dockerfilePathKey_: _dockerfilePath_
+          registryUrl: docker.io
+          registryUsername: ${{ secrets.SPANISHAMIGOFRONTEND_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.SPANISHAMIGOFRONTEND_REGISTRY_PASSWORD }}
+          containerAppName: spanish-amigo-frontend
+          resourceGroup: spanish-amigo
+          imageToBuild: lypandrew87/spanish-amigo-frontend:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
