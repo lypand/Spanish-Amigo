@@ -33,8 +33,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Create a stage for building the application.
 FROM deps as build
 
-#ENV VITE_BACKEND_BASE_URL=https://spanish-amigo-backend.delightfulpebble-6fff9143.westus.azurecontainerapps.io
-#ENV VITE_GOOGLE_CLIENT_ID=626523891185-mi6vmd33rdl1hs90sbgpolvrc0b1cdr9.apps.googleusercontent.com
+ENV VITE_BACKEND_BASE_URL=https://spanish-amigo-backend.delightfulpebble-6fff9143.westus.azurecontainerapps.io
+ENV VITE_GOOGLE_CLIENT_ID=626523891185-mi6vmd33rdl1hs90sbgpolvrc0b1cdr9.apps.googleusercontent.com
 
 
 # Download additional development dependencies before building, as some projects require
