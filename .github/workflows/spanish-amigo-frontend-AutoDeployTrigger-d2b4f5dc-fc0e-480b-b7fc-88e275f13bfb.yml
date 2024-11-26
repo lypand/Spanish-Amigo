@@ -46,7 +46,5 @@ jobs:
           containerAppName: spanish-amigo-frontend
           resourceGroup: spanish-amigo
           imageToBuild: lypandrew87/spanish-amigo-frontend:${{ github.sha }}
-          buildArguments: |
-            VITE_BACKEND_BASE_URL=Testing
-            VITE_GOOGLE_CLIENT_ID=AlsoTesting
+          buildArguments: "VITE_BACKEND_BASE_URL=Testing"
 
