@@ -38,6 +38,8 @@ FROM deps as build
 ENV VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL}
 ENV VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
 
+RUN echo "Building the app with VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL} and VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}"
+
 
 # Download additional development dependencies before building, as some projects require
 # "devDependencies" to be installed to build. If you don't need this, remove this step.
