@@ -17,6 +17,8 @@ FROM node:${NODE_VERSION}-alpine as base
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
+RUN echo "Building the app with VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL and VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID"
+
 
 ################################################################################
 # Create a stage for installing production dependecies.
@@ -37,8 +39,6 @@ FROM deps as build
 
 ENV VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL
 ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
-
-RUN echo "Building the app with VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL and VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID"
 
 
 # Download additional development dependencies before building, as some projects require
