@@ -1,10 +1,3 @@
-# syntax=docker/dockerfile:1
-
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
 ARG VITE_BACKEND_BASE_URL
 ARG VITE_GOOGLE_CLIENT_ID
@@ -16,9 +9,6 @@ FROM node:${NODE_VERSION}-alpine as base
 
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
-
-RUN echo " with version =${NODE_VERSION}  =$NODE_VERSION Building the app with VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL and VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID"
-
 
 ################################################################################
 # Create a stage for installing production dependecies.
@@ -37,8 +27,13 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Create a stage for building the application.
 FROM deps as build
 
+ARG VITE_BACKEND_BASE_URL
+ARG VITE_GOOGLE_CLIENT_ID
+
 ENV VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL
 ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+
+RUN echo "Building the app with VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL and VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID"
 
 
 # Download additional development dependencies before building, as some projects require
