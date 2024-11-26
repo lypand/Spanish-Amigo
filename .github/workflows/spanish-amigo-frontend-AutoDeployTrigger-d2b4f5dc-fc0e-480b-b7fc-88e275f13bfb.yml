@@ -24,6 +24,11 @@ jobs:
       - name: Checkout to the branch
         uses: actions/checkout@v2
 
+      - name: Echo the environment variable in GitHub Actions
+        run: |
+          echo "VITE_BACKEND_BASE_URL=${{ secrets.VITE_BACKEND_BASE_URL }}"
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}"
+
       - name: Azure Login
         uses: azure/login@v1
         with:
