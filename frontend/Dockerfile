@@ -7,6 +7,8 @@
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
 ARG NODE_VERSION=20.12.2
+ARG VITE_BACKEND_BASE_URL
+ARG VITE_GOOGLE_CLIENT_ID
 
 ################################################################################
 # Use node image for base image for all stages.
@@ -33,8 +35,8 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # Create a stage for building the application.
 FROM deps as build
 
-ENV VITE_BACKEND_BASE_URL=https://spanish-amigo-backend.delightfulpebble-6fff9143.westus.azurecontainerapps.io
-ENV VITE_GOOGLE_CLIENT_ID=626523891185-mi6vmd33rdl1hs90sbgpolvrc0b1cdr9.apps.googleusercontent.com
+ENV VITE_BACKEND_BASE_URL=${VITE_BACKEND_BASE_URL}
+ENV VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}
 
 
 # Download additional development dependencies before building, as some projects require

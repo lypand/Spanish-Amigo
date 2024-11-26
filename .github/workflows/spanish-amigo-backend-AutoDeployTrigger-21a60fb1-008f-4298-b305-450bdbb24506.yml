@@ -35,14 +35,12 @@ jobs:
         uses: azure/container-apps-deploy-action@v2
         with:
           appSourcePath: ${{ github.workspace }}/backend
-          _dockerfilePathKey_: _dockerfilePath_
+          dockerfilePath: _dockerfilePath_
           registryUrl: docker.io
           registryUsername: ${{ secrets.SPANISHAMIGOBACKEND_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.SPANISHAMIGOBACKEND_REGISTRY_PASSWORD }}
           containerAppName: spanish-amigo-backend
           resourceGroup: spanish-amigo
           imageToBuild: lypandrew87/spanish-amigo-backend:${{ github.sha }}
-          _buildArgumentsKey_: |
-            _buildArgumentsValues_
 
 
