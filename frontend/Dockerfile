@@ -17,7 +17,7 @@ FROM node:${NODE_VERSION}-alpine as base
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
-RUN echo " with version =${NODE_VERSION} Building the app with VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL and VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID"
+RUN echo " with version =${NODE_VERSION}  =$NODE_VERSION Building the app with VITE_BACKEND_BASE_URL=$VITE_BACKEND_BASE_URL and VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID"
 
 
 ################################################################################
