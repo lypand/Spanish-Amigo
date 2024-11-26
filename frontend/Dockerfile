@@ -6,7 +6,7 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-ARG VITE_BACKEND_BASE_URL=default
+ARG VITE_BACKEND_BASE_URL
 ARG VITE_GOOGLE_CLIENT_ID
 ARG NODE_VERSION=20.12.2
 
