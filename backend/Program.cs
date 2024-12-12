@@ -143,16 +143,14 @@ public class Program
 
         var app = builder.Build();
 
-        Console.WriteLine($"Current environment is {app.Environment}");
+        Console.WriteLine($"Current environment is {app.Environment.EnvironmentName}");
+        Console.WriteLine($"Current environment is develop: {app.Environment.IsDevelopment()}");
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseSwagger();
-        app.UseSwaggerUI();
 
         if (app.Environment.IsDevelopment())
         {

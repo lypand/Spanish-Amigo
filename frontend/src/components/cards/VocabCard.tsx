@@ -2,13 +2,16 @@ import React from 'react';
 import ConjugationTable from '../conjugationTable/ConjugationTable';
 import styles from './card.module.scss';
 import { VocabEntry } from '../../@types/vocabEntityType';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../app/store';
 
 type VocabCardProps = {
   wordInfo: VocabEntry | null,
-  displayEnglish: Boolean,
 }
 
-function VocabCard({ wordInfo, displayEnglish }: VocabCardProps) {
+
+function VocabCard({ wordInfo }: VocabCardProps) {
+  var displayEnglishTranslation = useSelector((state: RootState) => state.toggleEnglishTranslations.showEnglishTranslation);
 
   return (
     <div>
@@ -18,7 +21,7 @@ function VocabCard({ wordInfo, displayEnglish }: VocabCardProps) {
           <div className={styles.card_body}>
             <div className={styles.card_translation}>
               <h2>Translation</h2>
-              <ul className={`${displayEnglish ? styles.visible : styles.hidden} ${styles.card_translation_items}`} >
+              <ul className={`${displayEnglishTranslation ? styles.visible : styles.hidden} ${styles.card_translation_items}`} >
                 {wordInfo?.englishTranslations.map((item, index) => (
                   <li key={index}>{item}</li>
                 ))}

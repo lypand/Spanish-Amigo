@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
+import { AppDispatch } from '../../app/store';
+import { useDispatch } from 'react-redux';
+import { toggleEnglishTranslations } from '../../app/counter/configurationSlice';
+import { selectNextWord, selectPreviousWord } from '../../app/counter/vocabEntriesSlice';
 
-type GlobalEventListenerProps = {
-    onNext: () => void;
-    onToggle: () => void;
-    onPrevious: () => void;
-}
 
-const GlobalEventListener = ({ onNext, onToggle, onPrevious }: GlobalEventListenerProps) => {
+const GlobalEventListener = () => {
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.code === 'ArrowRight') {
-                onNext();
+                dispatch(selectNextWord());
             }
             if (event.code === 'ArrowLeft') {
-                onPrevious();
+                dispatch(selectPreviousWord());
             }
             if (event.code === 'Space') {
-                onToggle();
+                dispatch(toggleEnglishTranslations());
             }
             if (event.code === 'ArrowUp') {
-                onToggle();
+                dispatch(toggleEnglishTranslations());
             }
         };
 

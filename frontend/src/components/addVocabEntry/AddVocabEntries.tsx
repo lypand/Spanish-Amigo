@@ -1,140 +1,77 @@
 import React, { useState } from 'react';
 import './addVocabEntries.css';
-import axios from 'axios';
-import { VocabEntry } from '../../@types/vocabEntityType';
+import { VocabEntry, CustomVocabWord } from '../../@types/vocabEntityType';
 import { AddVocabEntry, GetVocabEntryDraft } from '../externalRepository/WordRepository';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../app/store';
+import { addCustomWord } from '../../app/counter/vocabEntriesSlice';
 
 function AddVocabEntries() {
 
-  const [formData, setFormData] = useState(
-    {
-      spanishWordInput: '',
-      englishTranslationInput: '',
-      spanishSentenceInput: '',
-      englishSentenceInput: '',
-    });
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [englishTranslationCollection, setEnglishTranslationCollectionInput] = useState([] as string[]);
+  const initialCustomVocabWord: CustomVocabWord = {
+    spanish: '',
+    english: '',
+    spanishSentence: '',
+    englishSentence: '',
+  };
 
+  const [customVocabWord, setCustomVocabWord] = useState<CustomVocabWord>(initialCustomVocabWord);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-
-    setFormData(prevState => ({
+    console.log(name, value);
+    setCustomVocabWord(prevState => ({
       ...prevState,
       [name]: value
     }));
   }
 
-  const addEnglishTranslation = () => {
-    setEnglishTranslationCollectionInput([...englishTranslationCollection, formData.englishTranslationInput]);
-    setFormData(prevState => ({
+  const populate = async () => {
+    var draftEntry = await GetVocabEntryDraft(customVocabWord.spanish);
+
+    if (!draftEntry || draftEntry === ({} as VocabEntry)) {
+      return;
+    };
+
+    const { spanishWord, englishTranslations, sentences } = draftEntry;
+
+    setCustomVocabWord(prevState => ({
       ...prevState,
-      englishTranslationInput: ''
+      spanish: spanishWord || prevState.spanish,
+      english: englishTranslations?.[0] || prevState.english,
+      spanishSentence: sentences?.[0]?.spanish || prevState.spanishSentence,
+      englishSentence: sentences?.[0]?.english || prevState.englishSentence,
     }));
   }
 
-  const populate = async () => {
-    reset();
-    var draftEntry = await GetVocabEntryDraft(formData.spanishWordInput);
-    if (draftEntry && draftEntry !== {} as VocabEntry) {
-      if (draftEntry.spanishWord) {
-        setFormData(prevState => ({
-          ...prevState,
-          spanishWordInput: draftEntry.spanishWord
-        }));
-      }
-
-      if (draftEntry.englishTranslations) {
-        setFormData(prevState => ({
-          ...prevState,
-          englishTranslationInput: draftEntry.englishTranslations[0]
-        }));
-      }
-
-      if (draftEntry.sentences) {
-        var firstSentence = draftEntry.sentences[0];
-        if (firstSentence) {
-          setFormData(prevState => ({
-            ...prevState,
-            englishSentenceInput: firstSentence.english,
-            spanishSentenceInput: firstSentence.spanish
-          }));
-        }
-      }
-    }
-  }
-
   const reset = () => {
-    setFormData({
-      spanishWordInput: '',
-      englishTranslationInput: '',
-      spanishSentenceInput: '',
-      englishSentenceInput: '',
-    })
-    setEnglishTranslationCollectionInput([]);
+    setCustomVocabWord(initialCustomVocabWord)
   }
 
   const submit = () => {
     const vocabEntry: VocabEntry = {
-      spanishWord: formData.spanishWordInput,
-      englishTranslations: englishTranslationCollection,
+      spanishWord: customVocabWord.spanish,
+      englishTranslations: [customVocabWord.english],
       sentences: [{
-        english: formData.englishSentenceInput,
-        spanish: formData.spanishSentenceInput,
+        english: customVocabWord.englishSentence,
+        spanish: customVocabWord.spanishSentence,
       }]
     }
     AddVocabEntry(vocabEntry);
+    dispatch(addCustomWord(vocabEntry));
     reset();
   }
 
   return (
     <div className="add_vocab_entries">
       <h1>Input Vocab</h1>
-      <div className='multi-input'>
-
-        Spanish:
-        <input
-          type="text"
-          name="spanishWordInput"
-          value={formData.spanishWordInput}
-          onChange={handleChange}
-        />
-        <button onClick={populate}>Populate</button>
-
-      </div>
-      <div className='multi-input'>
-        English:
-        <input
-          type="text"
-          name="englishTranslationInput"
-          value={formData.englishTranslationInput}
-          onChange={handleChange}
-        />
-        <button onClick={addEnglishTranslation}>Add EnglishTranslation</button>
-      </div>
-      <Items collection={englishTranslationCollection}></Items>
-
-
-      <div className='multi-input'>
-        English Sentence:
-        <input
-          type="text"
-          name="englishSentenceInput"
-          value={formData.englishSentenceInput}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className='multi-input'>
-        Spanish Sentence:
-        <input
-          type="text"
-          name="spanishSentenceInput"
-          value={formData.spanishSentenceInput}
-          onChange={handleChange}
-        />
-      </div>
+      <button onClick={populate}>Populate</button>
+      <InputBox label="Spanish" name='spanish' value={customVocabWord.spanish} onChange={handleChange} />
+      <InputBox label="English" name='english' value={customVocabWord.english} onChange={handleChange} />
+      <InputBox label="English Sentence" name='englishSentence' value={customVocabWord.englishSentence} onChange={handleChange} />
+      <InputBox label="Spanish Sentence" name='spanishSentence' value={customVocabWord.spanishSentence} onChange={handleChange} />
       <button onClick={reset}>Reset</button>
       <button onClick={submit}>Submit</button>
     </div>
@@ -143,22 +80,19 @@ function AddVocabEntries() {
 
 export default AddVocabEntries;
 
-type ItemProps = {
-  collection: string[],
-}
 
-const Items = ({ collection }: ItemProps) => {
+const InputBox = (
+  { label, name, value, onChange }:
+    { label: string, name: string, value: string, onChange: (event: React.ChangeEvent<HTMLInputElement>) => void }) => {
   return (
-    <>
-      <ul>
-        {collection && collection.length > 0 &&
-          collection.map((s, index) => {
-            return (
-              <li key={index}>{s}</li>
-            )
-          })
-        }
-      </ul>
-    </>
+    <div className='multi-input'>
+      {label}:
+      <input
+        type="text"
+        name={name}
+        value={value}
+        onChange={onChange}
+      />
+    </div>
   )
 }

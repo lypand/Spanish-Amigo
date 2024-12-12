@@ -1,17 +1,16 @@
 import React from 'react'
+import { AppDispatch } from '../../app/store';
+import { useDispatch } from 'react-redux';
+import { retrieveVocabEntriesAsync, selectNextWord, selectPreviousWord } from '../../app/counter/vocabEntriesSlice';
 
-type WordSelectionProps = {
-    onNext: () => void,
-    onToggle: () => void,
-    onPrevious: () => void,
-}
+const WordSelection = () => {
+    const dispatch = useDispatch<AppDispatch>();
 
-const WordSelection = ({ onNext, onToggle, onPrevious }: WordSelectionProps) => {
     return (
         <div className="buttons">
-            <button onClick={onNext}>Next Word</button>
-            <button onClick={onPrevious}>Previous Word</button>
-            <button onClick={onToggle}>Show English</button>
+            <button onClick={() => dispatch(selectNextWord())}>Next Word</button>
+            <button onClick={() => dispatch(selectPreviousWord())}>Previous Word</button>
+            <button onClick={() => dispatch(retrieveVocabEntriesAsync())}>Load Words</button>
         </div>
     )
 }

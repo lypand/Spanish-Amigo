@@ -15,3 +15,10 @@ export type Conjugation = {
     tense: string,
     values: Array<string>,
 }
+
+export type CustomVocabWord = {
+    spanish: string,
+    english: string,
+    spanishSentence: string,
+    englishSentence: string
+}

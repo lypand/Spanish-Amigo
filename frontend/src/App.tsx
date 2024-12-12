@@ -1,91 +1,42 @@
 import './App.css';
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useEffect } from 'react';
 import AddVocabEntries from './components/addVocabEntry/AddVocabEntries.tsx';
 import VocabCard from './components/cards/VocabCard.tsx'
 import WordSelection from './components/wordSelection/WordSelection.tsx'
 import GlobalEventListener from './components/eventListeners/GlobalEventListener.tsx';
 import Header from './components/header/Header.tsx'
-import { Authenticate, RetrieveWords } from './components/externalRepository/WordRepository.tsx';
-import WordsReducer, { State } from './state/reducers/wordsReducer.tsx';
-import { VocabEntry } from "./@types/vocabEntityType";
+import { Authenticate } from './components/externalRepository/WordRepository.tsx';
 import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from './app/store.tsx';
+import { retrieveVocabEntriesAsync } from './app/counter/vocabEntriesSlice.tsx';
 
 function App() {
-  const [displayEnglish, setDisplayEnglish] = useState(false);
-
-  const wordInitState: State = {
-    data: [],
-    // data: [{
-    //   id: 1,
-    //   spanishWord: 'Abrir',
-    //   englishTranslations: ['open'],
-    //   sentences: [{
-    //     english: 'Can you open the door',
-    //     spanish: 'Puedes abrir la purta por favor'
-    //   }],
-    // }],
-    isLoading: true,
-    selectedWord: null,
-    // selectedWord: {
-    //   id: 1,
-    //   spanishWord: 'Abrir',
-    //   englishTranslations: ['open'],
-    //   sentences: [{
-    //     english: 'Can you open the door',
-    //     spanish: 'Puedes abrir la purta por favor'
-    //   }]
-    // },
-    currentIndex: 0,
-  };
-
-  const [words, dispatchWords] = useReducer(WordsReducer, wordInitState);
-
-  const handleNext = () => {
-    dispatchWords({
-      type: 'WORDS_SELECT_NEXT',
-    })
-  };
-
-  const handlePrevious = () => {
-    dispatchWords({
-      type: 'WORDS_SELECT_PREVIOUS',
-    })
-  };
+  const vocabEntries = useSelector((state: RootState) => state.vocabEntries);
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleSpeakWord = () => {
-    if (words.data.length !== 0) {
-      const utterance = new SpeechSynthesisUtterance(words.selectedWord?.spanishWord);
+    if (vocabEntries.data.length !== 0) {
+      const utterance = new SpeechSynthesisUtterance(vocabEntries.selectedWord?.spanishWord);
       utterance.lang = 'es';
       window.speechSynthesis.speak(utterance);
     }
   };
 
-  const handleToggle = () => {
-    setDisplayEnglish(previous => !previous);
-  };
 
   const authenticationFlow = async (googleResponse: CredentialResponse) => {
     await Authenticate(googleResponse.credential || '');
   }
 
-  const retrieveWords = async () => {
-    var vocabEntries = await RetrieveWords();
-    dispatchWords({
-      type: 'WORDS_FETCH_SUCCESS',
-      payload: vocabEntries,
-    });
-  }
-
   useEffect(() => {
-    if (words.data.length !== 0) {
+    if (vocabEntries.data.length !== 0) {
       handleSpeakWord();
     }
-  }, [words.selectedWord]);
-
+  }, [vocabEntries.selectedWord]);
 
   useEffect(() => {
-    retrieveWords()
-  }, []);
+    dispatch(retrieveVocabEntriesAsync())
+  }, [dispatch]);
 
   return (
     <div className='header'>
@@ -93,17 +44,18 @@ function App() {
         authenticationFlow(googleResponse);
       }
       }></GoogleLogin>
-      <Header onHideEnglish={handleToggle} ></Header>
+      <Header></Header>
       <div className="app">
-        {words.isLoading ? <p>Loading...</p> :
-          <VocabCard wordInfo={words.selectedWord} displayEnglish={displayEnglish}></VocabCard>
+        {vocabEntries.isLoading ? <p>Loading...</p> :
+          <VocabCard wordInfo={vocabEntries.selectedWord}></VocabCard>
         }
-        <WordSelection onNext={handleNext} onToggle={handleToggle} onPrevious={handlePrevious}></WordSelection>
+        <WordSelection ></WordSelection>
         <AddVocabEntries></AddVocabEntries>
-        <GlobalEventListener onNext={handleNext} onToggle={handleToggle} onPrevious={handlePrevious}></GlobalEventListener>
+        <GlobalEventListener></GlobalEventListener>
       </div>
     </div>
   );
 };
 
-export default App
+export default App;
+

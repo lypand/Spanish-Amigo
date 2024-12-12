@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
+    "@reduxjs/toolkit": "^2.4.0",
     "@tanstack/react-table": "^8.17.3",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
@@ -19,6 +20,8 @@
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
+    "react-redux": "^9.1.2",
+    "redux": "^5.0.1",
     "sass": "^1.79.2",
     "spanish-verbs": "^3.3.0",
     "styled-components": "^6.1.13"
