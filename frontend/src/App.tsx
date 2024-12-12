@@ -5,8 +5,6 @@ import VocabCard from './components/cards/VocabCard.tsx'
 import WordSelection from './components/wordSelection/WordSelection.tsx'
 import GlobalEventListener from './components/eventListeners/GlobalEventListener.tsx';
 import Header from './components/header/Header.tsx'
-import { Authenticate } from './components/externalRepository/WordRepository.tsx';
-import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from './app/store.tsx';
 import { retrieveVocabEntriesAsync } from './app/counter/vocabEntriesSlice.tsx';
@@ -23,11 +21,6 @@ function App() {
     }
   };
 
-
-  const authenticationFlow = async (googleResponse: CredentialResponse) => {
-    await Authenticate(googleResponse.credential || '');
-  }
-
   useEffect(() => {
     if (vocabEntries.data.length !== 0) {
       handleSpeakWord();
@@ -40,10 +33,6 @@ function App() {
 
   return (
     <div className='header'>
-      <GoogleLogin onSuccess={(googleResponse: CredentialResponse) => {
-        authenticationFlow(googleResponse);
-      }
-      }></GoogleLogin>
       <Header></Header>
       <div className="app">
         {vocabEntries.isLoading ? <p>Loading...</p> :
